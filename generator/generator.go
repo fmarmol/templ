@@ -177,12 +177,16 @@ func (g *generator) templateNodeInfo() (hasTemplates bool, hasCSS bool) {
 }
 
 func (g *generator) writeImports() error {
-	var err error
-	// Always import templ because it's the interface type of all templates.
-	if _, err = g.w.Write("import \"github.com/a-h/templ\"\n"); err != nil {
-		return err
-	}
 	hasTemplates, hasCSS := g.templateNodeInfo()
+
+	var err error
+	if hasTemplates || hasCSS {
+		// Always import templ because it's the interface type of all templates.
+		if _, err = g.w.Write("import \"github.com/a-h/templ\"\n"); err != nil {
+			return err
+		}
+	}
+
 	if hasTemplates {
 		// The first parameter of a template function.
 		if _, err = g.w.Write("import \"context\"\n"); err != nil {
